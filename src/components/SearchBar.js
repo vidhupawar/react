@@ -52,7 +52,7 @@ export default class SearchBar extends Component {
     this.setState({
       suggestions: this.getSuggestions(value)
     });
-    fetch('http://localhost:4000/search/' + value)
+    fetch('https://pacific-hollows-45027.herokuapp.com/search/' + value)
     .then(response => response.json())
     .then(data => {
       this.searchResults = data.searchResults;

@@ -20,7 +20,7 @@ class Home extends Component {
 
 
   displayItems(limit) {
-    fetch('http://localhost:4000/getData/' + limit)
+    fetch('https://pacific-hollows-45027.herokuapp.com/getData/' + limit)
     .then(response => response.json())
     .then(data => {
       if(data && data.result && data.result.length){

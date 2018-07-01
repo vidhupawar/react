@@ -14,7 +14,7 @@ export default class MovieDash extends Component {
   }
 
   getSingleMovie(){
-    fetch('http://localhost:4000/getSingleMovie/' + this.props.match.params.movieName)
+    fetch('https://pacific-hollows-45027.herokuapp.com/getSingleMovie/' + this.props.match.params.movieName)
     .then(response => response.json())
     .then(data => {
       if(data){

@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import { Card, Icon, Image } from 'semantic-ui-react';
-import MovieDash from "./MovieDash";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { BrowserRouter as Router,  Link } from "react-router-dom";
 
 export default class MoviesCard extends Component {
   constructor(props) {
@@ -21,7 +20,7 @@ export default class MoviesCard extends Component {
             </Card.Content>
             <Card.Content extra>
               <li>
-              <Icon name='heart' />{this.props.movie.review}% <Link to={'/' + this.props.movie.name}>{this.props.movie.name}</Link>
+              <Icon name='heart' />{this.props.movie.review}% <Link to={'/' + this.props.movie.sr_nm}>{this.props.movie.name}</Link>
               </li>
             </Card.Content>
           </Card>

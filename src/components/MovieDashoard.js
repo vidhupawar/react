@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import MoviesCard from "./MoviesCard";
-import App from "./../App";
 
 export default class MovieDashboard extends Component {
   constructor(props) {
@@ -19,5 +18,3 @@ export default class MovieDashboard extends Component {
     );
   }
 }
-
-

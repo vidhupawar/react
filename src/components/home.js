@@ -47,7 +47,7 @@ class Home extends Component {
 
   componentDidMount() {
     this.refs.iScroll.addEventListener("scroll", () => {
-      if (this.refs.iScroll.scrollTop + this.refs.iScroll.clientHeight >= this.refs.iScroll.scrollHeight - 10 && (this.state.count > this.state.limit || this.state.count == 0)){
+      if (this.refs.iScroll.scrollTop + this.refs.iScroll.clientHeight >= this.refs.iScroll.scrollHeight - this.state.count && (this.state.count > this.state.limit || this.state.count === 0)){
         this.loadMoreItems();
       }
     });

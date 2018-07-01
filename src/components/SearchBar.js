@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Autosuggest from 'react-autosuggest';
-import { BrowserRouter } from 'react-router-dom'
 import Redirect from 'react-router-dom/Redirect';
 const escapeRegexCharacters = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -16,47 +15,68 @@ export default class SearchBar extends Component {
     };
 
     this.getSuggestions = value => {
-      const escapedValue = escapeRegexCharacters(value.trim());
-
-      if (escapedValue === '') {
-        return [];
+      if(value){
+          fetch('https://pacific-hollows-45027.herokuapp.com/search/' + value)
+          .then(response => response.json())
+          .then(data => {
+            if(data.searchResult && data.searchResult.length){
+                this.state.searchResults = data.searchResult;
+                const escapedValue = escapeRegexCharacters(value.trim());
+                if (escapedValue === '') {
+                  return [];
+                }
+                const regex = new RegExp((escapedValue).replace(/[\^\$\.\*\+\-\?\=\!\:\|\\\/\(\)\[\]\{\}\,]/g, '\\$&').trim(), "i");
+                const suggestions = this.state.searchResults.filter(mov => {
+                  console.log("regex", regex.test(mov.name))
+                  return  regex.test(mov.name) //{name: regex.test(mov.name), sortName: mov.sr_nm}
+                });
+                return this.setState({suggestions : suggestions});
+            }else{
+              const suggestions = [
+                { noResult: true }
+              ];
+              return this.setState({suggestions : suggestions});
+            }
+          })
+      }else{
+        const suggestions = [
+          { noResult: true }
+        ];
+        return this.setState({suggestions : suggestions});
       }
-
-      const regex = new RegExp('^' + escapedValue, 'i');
-      const suggestions = this.props.movies.filter(mov => regex.test(mov.name));
-      return suggestions;
     }
 
   }
 
 
   onChange = (event, { newValue, method }) => {
-    this.setState({
-      value: newValue
-    });
+    if(newValue){
+      this.setState({
+        value: newValue
+      });
+    }
   };
 
   getSuggestionValue = suggestion => {
-    if (suggestion.isAddNew) {
-      return this.state.value;
+    if(suggestion && suggestion.sr_nm){
+      this.state.showMovie = <Redirect push to={"/" + suggestion.sr_nm} />
+      return suggestion.name;
     }
-    this.state.showMovie = <Redirect push to={"/" + suggestion.name} />
-    return suggestion.name;
   };
 
   renderSuggestion = suggestion => {
+    if (suggestion.noResult) {
+      return (
+        <span>
+          <strong className="red-color">"No Search Result Found"</strong>
+        </span>
+      );
+    }
     return suggestion.name;
   };
 
   onSuggestionsFetchRequested = ({ value }) => {
-    this.setState({
-      suggestions: this.getSuggestions(value)
-    });
-    fetch('https://pacific-hollows-45027.herokuapp.com/search/' + value)
-    .then(response => response.json())
-    .then(data => {
-      this.searchResults = data.searchResults;
-    })
+    this.getSuggestions(value)
   };
 
   onSuggestionsClearRequested = () => {

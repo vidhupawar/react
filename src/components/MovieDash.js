@@ -1,13 +1,14 @@
 import React, {Component} from "react";
-import { Link } from "react-router-dom";
 import Headers from "./Headers";
-import { Card, Icon, Image } from 'semantic-ui-react';
+import { Icon } from 'semantic-ui-react';
 import moment from 'moment';
+import Redirect from 'react-router-dom/Redirect';
 var LogoList = require("../Data/logo");
 export default class MovieDash extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isNotExists : false,
       currentMovie: {}
     };
     this.getSingleMovie();
@@ -17,8 +18,7 @@ export default class MovieDash extends Component {
     fetch('https://pacific-hollows-45027.herokuapp.com/getSingleMovie/' + this.props.match.params.movieName)
     .then(response => response.json())
     .then(data => {
-      if(data){
-
+      if(data && data.movie){
         data.movie['logo'] = LogoList.logo[data.movie.id]
         data.movie.release_dt = moment(data.movie.release_dt).format("DD/MM/YYYY")
         data.movie.audio = data.movie.audio.join(" | ");
@@ -27,10 +27,12 @@ export default class MovieDash extends Component {
         for(var i in data.movie.cast){
           data.movie.cast[i] = <p key={i}>{data.movie.cast[i].name} | {data.movie.cast[i].as}</p>
         }
-        for(var i in data.movie.crew){
-          data.movie.crew[i] = <p key={i}>{data.movie.crew[i].name} | {data.movie.crew[i].position}</p>
+        for(var j in data.movie.crew){
+          data.movie.crew[j] = <p key={j}>{data.movie.crew[j].name} | {data.movie.crew[j].position}</p>
         }
         this.setState({currentMovie : data.movie})
+      }else{
+        this.setState({isNotExists: true})
       }
     })
   }
@@ -38,11 +40,12 @@ export default class MovieDash extends Component {
   render(){
     return(
       <div>
+        {this.state.isNotExists ? <Redirect push to={"/"} />  : ''}
         <Headers />
         <div className="ui internally celled grid">
            <div className="row">
             <div className="three wide column">
-              <img src={ this.state.currentMovie.logo} />
+              <img alt="" src={ this.state.currentMovie.logo} />
             </div>
             <div className="ten wide column">
               <p><b>NAME : {this.state.currentMovie.name}</b> </p>
@@ -58,10 +61,8 @@ export default class MovieDash extends Component {
               <span>{this.state.currentMovie.cast}</span>
               <br /><p><b>CREW : </b></p>
               <span>{this.state.currentMovie.crew}</span>
-
             </div>
             <div className="three wide column">
-
             </div>
           </div>
         </div>
